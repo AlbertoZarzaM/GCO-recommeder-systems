@@ -1,0 +1,15 @@
+{
+  "entryPoints": [
+    "./src/index.ts"
+  ],
+  "out": "./docs"
+
+
+
+
+}
+
+//npm install typedoc --save-dev
+
+//ejecutar: npx typedoc
+
