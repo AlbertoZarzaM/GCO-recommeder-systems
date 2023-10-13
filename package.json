@@ -8,11 +8,15 @@
     "@typescript-eslint/parser": "^5.50.0",
     "eslint": "^8.33.0",
     "eslint-config-prettier": "^8.6.0",
+    "simple-statistics": "^7.8.3",
     "tsc-watch": "^6.0.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.8.5"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc-watch --onSuccess \"node dist/main.js\""
   },
   "keywords": [],
   "author": "",
