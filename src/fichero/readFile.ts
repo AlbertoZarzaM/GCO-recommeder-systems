@@ -46,7 +46,8 @@ export function leerArchivo(ruta: string): (number | '-')[][] {
     console.log('Matriz', matriz);
     return matriz;
   } catch (error) {
-    console.error('Error al leer el archivo:', error);
+    console.error('Error al leer el archivo');
+    process.exit(1);
   }
 }
 

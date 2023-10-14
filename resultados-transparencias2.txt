@@ -1,0 +1,49 @@
+Bienvenido al programa de filtrado colaborativo
+Por favor, introduzca la métrica sobre la que quiere hacer el cálculo (1: Pearson 2: Coseno 3: Euclídea): 2
+Ha introducido: 2
+Introduzca el nombre del fichero de entrada: diapositivas.txt
+Fichero: diapositivas.txt
+Valor minimo: 1
+Valor maximo: 5
+Matriz [
+  [ 5, 3, 4, 4, '-' ],
+  [ 3, 1, 2, 3, 3 ],
+  [ 4, 3, 4, 3, 5 ],
+  [ 3, 3, 1, 5, 4 ],
+  [ 1, 5, 5, 2, 1 ]
+]
+Introduzca el número de vecinos considerado: 2
+Numero de vecinos: 2
+Introduzca tipo de prediccion, simple (1) o con la media (2): 2
+prediccion: 2
+metrica distancia coseno
+numero de vecinos: 2
+nombre fichero: diapositivas.txt
+prediccion: true
+Posiciones de los guiones:  [ [ 0, 4 ] ]
+Usuario a comparar:  [ 5, 3, 4, 4, '-' ]
+filaCompararSinGuion:  [ 5, 3, 4, 4 ]
+numerador:  38
+denominador:  38.961519477556315
+distancia:  0.9753213044447562
+numerador:  57
+denominador:  57.44562646538029
+distancia:  0.9922426389474776
+numerador:  48
+denominador:  53.88877434122992
+distancia:  0.8907235428302466
+numerador:  48
+denominador:  60.249481325568276
+distancia:  0.7966873563711506
+Similitudes con distancia coseno:  [
+  0.9753213044447562,
+  0.9922426389474776,
+  0.8907235428302466,
+  0.7966873563711506
+]
+Los vecinos más parecidos son: 
+ [
+  { usuario: 2, media: 3.8, valor: 5, similitud: 0.9922426389474776 },
+  { usuario: 1, media: 2.4, valor: 3, similitud: 0.9753213044447562 }
+]
+prediccion:  4.902580043392168
