@@ -5,6 +5,7 @@ import { metrica, numeroVecinos, prediccionBool} from "./main";
 import * as ss from 'simple-statistics';
 
 export var matrizResultado: (number | '-')[][] = [];
+export var MatrizSinNormalizar: (number | '-')[][] = [];
 
 export type datosType = {
   usuario: number, // Número de fila del usuario
@@ -56,34 +57,28 @@ export function gestionarLlamadasSimilitudes(filasConGuion: number[], matriz: (n
     const fila_actual = filasConGuion[i];
     // Obtención de columnas con guiones de la fila actual
     let columnasConGuion: number[] = [];
+
+    // Obtención de columnas con guiones de la fila actual
     for (let j = 0; j < posicionesGuiones.length; j++) {
       if (posicionesGuiones[j][0] == fila_actual) {
         columnasConGuion.push(posicionesGuiones[j][1]);
       }
     }
 
-    if (metrica === 1) { //* Pearson
+    let resultado: [datosType[], number] = filtradoMetrica(matriz, fila_actual);
 
-      let resultado: [datosType[], number] = correlacionPearson(matriz, fila_actual);
-      // * Pasamos a resolver las incógnitas de esta fila
-      // ? actualizamos matriz inicial? serían las predicciones adecuadas?
-      for (let k = 0; k < columnasConGuion.length; k++) { //* Predicción para cada una de las incógnitas de la fila
-       prediccion(resultado[0], resultado[1], columnasConGuion[k], matriz, fila_actual);
-      }
-
-    } /* else if (metrica === 2) { //* Distancia coseno
-      distanciaCoseno(matriz, fila_actual);
+    // * Pasamos a resolver las incógnitas de esta fila
+    // ? actualizamos matriz inicial? serían las predicciones adecuadas?
+    for (let k = 0; k < columnasConGuion.length; k++) { //* Predicción para cada una de las incógnitas de la fila
+     prediccion(resultado[0], resultado[1], columnasConGuion[k], matriz, fila_actual);
     }
-    else if (metrica === 3) {//* Distancia euclidea
-      distanciaEuclidea(matriz, fila_actual);
-    } */
+
   }
 }
 
-/**
- * Correlacion de pearson
- */
-export function correlacionPearson(matriz: (number | '-')[][], filaPrincipal: number): [datosType[], number] {
+
+
+export function filtradoMetrica (matriz: (number | '-')[][], filaPrincipal: number): [datosType[], number] {
   let matrizCorrelacion: number[][] = [];
   let datosFinalesUsuario: datosType[] = [];
 
@@ -91,7 +86,7 @@ export function correlacionPearson(matriz: (number | '-')[][], filaPrincipal: nu
   console.log('Usuario a comparar: ', principalFilaComparar);
 
   const coeficientes: number[] = []; // similitudes.
-  
+  let metricaString: string = "";
   for (let i = 0; i < matriz.length; i++) {
     // La fila del usuario a comparar se obvia
     if (i != filaPrincipal) {
@@ -112,154 +107,87 @@ export function correlacionPearson(matriz: (number | '-')[][], filaPrincipal: nu
       if (principalFilaComparar.length == 0 || vecinoSinGuiones.length == 0) {
         console.log('No se puede comparar, no hay suficientes valores');
       }
-
-
-      let similitud = ss.sampleCorrelation(principalFilaCompararSinGuiones, vecinoSinGuiones);
-      coeficientes.push(similitud);
-      let datosUsuario: datosType = { usuario: i, media: media(vecino) , similitud: similitud };
-
-      datosFinalesUsuario.push(datosUsuario);
+      
+      if (metrica === 1) { //* Pearson
+        let similitud = ss.sampleCorrelation(principalFilaCompararSinGuiones, vecinoSinGuiones);
+        coeficientes.push(similitud);
+        let datosUsuario: datosType = { usuario: i, media: media(vecino) , similitud: similitud };
+        datosFinalesUsuario.push(datosUsuario);
+        metricaString = "Pearson";
+      } else if (metrica === 2) { //* Distancia coseno
+        let similitud = distanciaCoseno(principalFilaCompararSinGuiones, vecinoSinGuiones);
+        coeficientes.push(similitud);
+        let datosUsuario: datosType = { usuario: i, media: media(vecino) , similitud: similitud };
+        datosFinalesUsuario.push(datosUsuario);
+        metricaString = "Coseno";
+      } else if (metrica === 3) {//* Distancia euclidea
+        let similitud = distanciaEuclidea(principalFilaCompararSinGuiones, vecinoSinGuiones);
+        coeficientes.push(similitud);
+        let datosUsuario: datosType = { usuario: i, media: media(vecino) , similitud: similitud };
+        datosFinalesUsuario.push(datosUsuario);
+        metricaString = "Euclidea";
+      } 
+      
     }
   }
 
-  console.log('Similitudes por correlación de pearson: ', coeficientes);
+  console.log('Similitudes ', metricaString , " ", coeficientes);
   return [datosFinalesUsuario, media(principalFilaComparar)];
 
 }
 
-// export function filtradodistanciaCoseno(matriz: (number | '-')[][]): [datosType[], number] {
-//   let matrizCorrelacion: number[][] = [];
-//   let datosFinalesUsuario: datosType[] = [];
-//   const posiciones: [number, number][] = guion(matriz);
-//   if (posiciones.length == 1) {
-//     const principalFilaComparar: (number | '-')[] = matriz[Number(posiciones.at(0)[0])];
-//     console.log('Usuario a comparar: ', principalFilaComparar);
-//     let filaCompararSinGuion: (number)[] = []; // Fila del usuario a comparar obviando el guión
-//     for (const elemento of principalFilaComparar) {
-//       if (elemento != '-') {
-//         filaCompararSinGuion.push(elemento);
-//       }
-//     }
-//     console.log('filaCompararSinGuion: ', filaCompararSinGuion);
 
-
-//     const similitudes: number[] = [];
-//     for (let i = 0; i < matriz.length; i++) {
-//       // La fila del usuario a comparar se obvia
-//       if (i != posiciones.at(0)[0]) {
-//         const vecino: number[] = matriz[i] as number[];
-//         const vecinoSinColumna: number[] = [];
-//         for (let j = 0; j < vecino.length; ++j) {
-//           if (j != posiciones.at(0)[1]) {
-//             vecinoSinColumna.push(vecino[j]);
-//           }
-//         }
-//         let similitud = distanciaCoseno(filaCompararSinGuion, vecinoSinColumna);
-//         similitudes.push(similitud);
-//         let datosUsuario: datosType = { usuario: i, media: ss.mean(vecino), valor: vecino[posiciones.at(0)[1]] as number, similitud: similitud };
-
-//         datosFinalesUsuario.push(datosUsuario);
-//       }
-//     }
-
-//     console.log('Similitudes con distancia coseno: ', similitudes);
-//     return [datosFinalesUsuario, ss.mean(filaCompararSinGuion)];
-//   }
-// }
-
-// /**
 //  * Distancia coseno.
 //  */
+export function distanciaCoseno(arrayA: (number | '-')[], arrayB: (number | '-')[]): number {
 
-// export function distanciaCoseno(arrayA: (number | '-')[], arrayB: (number | '-')[]): number {
+  let numerador: number = 0;
+  let denominador: number = 0;
+  let denominadorA: number = 0;
+  let denominadorB: number = 0;
 
-//   let numerador: number = 0;
-//   let denominador: number = 0;
-//   let denominadorA: number = 0;
-//   let denominadorB: number = 0;
+  for (let i = 0; i < arrayA.length; i++) {
 
-//   for (let i = 0; i < arrayA.length; i++) {
+    if (arrayA[i] != "-" && arrayB[i] != "-") {
 
-//     if (arrayA[i] != "-" && arrayB[i] != "-") {
+      numerador += (arrayA[i] as number) * (arrayB[i] as number);
+      denominadorA += (arrayA[i] as number) * (arrayA[i] as number);
+      denominadorB += (arrayB[i] as number) * (arrayB[i] as number);
+    }
 
-//       numerador += (arrayA[i] as number) * (arrayB[i] as number);
-//       denominadorA += (arrayA[i] as number) * (arrayA[i] as number);
-//       denominadorB += (arrayB[i] as number) * (arrayB[i] as number);
-//     }
+  }
 
-//   }
+  denominador = Math.sqrt(denominadorA) * Math.sqrt(denominadorB);
+  console.log('numerador: ', numerador);
+  console.log('denominador: ', denominador);
 
-//   denominador = Math.sqrt(denominadorA) * Math.sqrt(denominadorB);
-//   console.log('numerador: ', numerador);
-//   console.log('denominador: ', denominador);
+  const distancia = numerador / denominador;
 
-//   const distancia = numerador / denominador;
+  console.log('distancia: ', distancia);
+  // habría que llamar a la función para cada comparación.
+  // Además de guardar el nuevo valor como similitud.
+  return distancia;
 
-//   console.log('distancia: ', distancia);
-//   // habría que llamar a la función para cada comparación.
-//   // Además de guardar el nuevo valor como similitud.
-//   return distancia;
+}
 
 
-// }
-
-// export function filtradodistanciaEuclidea(matriz: (number | '-')[][]): [datosType[], number] {
-//   let matrizCorrelacion: number[][] = [];
-//   let datosFinalesUsuario: datosType[] = [];
-//   const posiciones: [number, number][] = guion(matriz);
-//   if (posiciones.length == 1) {
-//     const principalFilaComparar: (number | '-')[] = matriz[Number(posiciones.at(0)[0])];
-//     console.log('Usuario a comparar: ', principalFilaComparar);
-//     let filaCompararSinGuion: (number)[] = []; // Fila del usuario a comparar obviando el guión
-//     for (const elemento of principalFilaComparar) {
-//       if (elemento != '-') {
-//         filaCompararSinGuion.push(elemento);
-//       }
-//     }
-//     console.log('filaCompararSinGuion: ', filaCompararSinGuion);
-
-//     const similitudes: number[] = [];
-//     for (let i = 0; i < matriz.length; i++) {
-//       // La fila del usuario a comparar se obvia
-//       if (i != posiciones.at(0)[0]) {
-//         const vecino: number[] = matriz[i] as number[];
-//         const vecinoSinColumna: number[] = [];
-//         for (let j = 0; j < vecino.length; ++j) {
-//           if (j != posiciones.at(0)[1]) {
-//             vecinoSinColumna.push(vecino[j]);
-//           }
-//         }
-//         let similitud = distanciaEuclidea(filaCompararSinGuion, vecinoSinColumna);
-//         similitudes.push(similitud);
-//         let datosUsuario: datosType = { usuario: i, media: ss.mean(vecino), valor: vecino[posiciones.at(0)[1]] as number, similitud: similitud };
-
-//         datosFinalesUsuario.push(datosUsuario);
-//       }
-//     }
-
-//     console.log('Similitudes con distancia euclidea: ', similitudes);
-//     return [datosFinalesUsuario, ss.mean(filaCompararSinGuion)];
-//   }
-// }
-
-// /**
 //  * Distancia Euclidea.
 //  */
-// export function distanciaEuclidea(arrayA: (number | '-')[], arrayB: (number | '-')[]): number {
+export function distanciaEuclidea(arrayA: (number | '-')[], arrayB: (number | '-')[]): number {
 
-//   //? sqrt(sumatorio (r(u,i) - r(v,i))^2)
-//   let resultado: number = 0;
-//   let sumatorio: number = 0;
+  //? sqrt(sumatorio (r(u,i) - r(v,i))^2)
+  let resultado: number = 0;
+  let sumatorio: number = 0;
 
-//   for (let i = 0; i < arrayA.length; i++) {
-//     if (arrayA[i] != "-" && arrayB[i] != "-") { // no haría falta comprobar, ya se ha filtrado.
-//       sumatorio += Math.pow((arrayA[i] as number) - (arrayB[i] as number), 2);
-//     }
-//   }
+  for (let i = 0; i < arrayA.length; i++) {
+    if (arrayA[i] != "-" && arrayB[i] != "-") { // no haría falta comprobar, ya se ha filtrado.
+      sumatorio += Math.pow((arrayA[i] as number) - (arrayB[i] as number), 2);
+    }
+  }
 
-//   resultado = Math.sqrt(sumatorio);
-//   return resultado;
-// }
+  resultado = Math.sqrt(sumatorio);
+  return resultado;
+}
 
 
 export function media(usuario: (number|'-')[]): number {
@@ -315,11 +243,13 @@ export function prediccionSimple(vecinosSeleccionados: datosType[], fila: number
     // valor absoluto de la similitud
     denominador += Math.abs(vecino.similitud);
   }
-  const prediccion: number = numerador / denominador;
+  var prediccion: number = numerador / denominador;
   
-  console.log('prediccion: ', prediccion);
+  console.log('Prediccion: ', prediccion);
 
-  // Actualizar prediccion matrizResultado
+  // Actualizar prediccion matrizResultado redondeado a 3 decimales
+
+  prediccion = Math.round(prediccion * 1000) / 1000;
   matrizResultado[fila][columna] = prediccion;
 
 }
@@ -335,10 +265,11 @@ export function prediccionMedia(vecinosSeleccionados: datosType[], mediaprincipa
     // valor absoluto de la similitud
     denominador += Math.abs(vecino.similitud);
   }
-  const prediccion: number = media + (numerador / denominador);
+  var prediccion: number = media + (numerador / denominador);
   
   console.log('prediccion: ', prediccion);
 
+  prediccion = Math.round(prediccion * 1000) / 1000;
   matrizResultado[fila][columna] = prediccion;
   // Actualizar prediccion matrizResultado
 }

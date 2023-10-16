@@ -6,11 +6,13 @@
 // npm install fs-extra
 import * as fs from 'fs';
 
+
 // valor minimo de puntuacion asignable por un usuario a un item
 export let minVal: number = 0;
 
 // valor maximo de puntuacion asignable por un usuario a un item
 export let maxVal: number = 0;
+
 
 
 export function leerArchivo(ruta: string): (number | '-')[][] {
@@ -25,7 +27,7 @@ export function leerArchivo(ruta: string): (number | '-')[][] {
     console.log('Valor minimo:', minVal);
     console.log('Valor maximo:', maxVal);
     
-    var matriz: (number | '-')[][] = [];
+    const matriz: (number | '-')[][] = [];
     
     for (const linea of lineas) {
       // Procesa cada linea
@@ -44,7 +46,9 @@ export function leerArchivo(ruta: string): (number | '-')[][] {
     }
     
     console.log('Matriz sin normalizar', matriz);
-    return normalizarMatriz(matriz, minVal, maxVal);
+   
+    // return normalizarMatriz(matriz, minVal, maxVal);
+    return matriz;
   } catch (error) {
     console.error('Error al leer el archivo');
     process.exit(1);
