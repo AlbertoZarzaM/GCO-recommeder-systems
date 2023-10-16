@@ -12,9 +12,7 @@ export type datosType = {
 
 /**
  * Funcion que localiza y extrae los guiones de la matriz.
- * 
  */
-
 export function guion(matriz: (number | '-')[][]): [number, number][] {
     let posiciones: [number, number][] = [];
     for (let i = 0; i < matriz.length; i++) {
@@ -24,15 +22,9 @@ export function guion(matriz: (number | '-')[][]): [number, number][] {
             }
         }
     }
-    console.log("Posiciones de los guiones: ", posiciones);
+    //!console.log("Posiciones de los guiones: ", posiciones);
     return posiciones;
 }
-
-
-/**
- * Funciones para ejecutar las metricas
- * 
- */
 
 
 
@@ -88,6 +80,8 @@ export function correlacionPearson(matriz: (number | '-') [][]):[datosType[], nu
     }
     else {
         console.log("Sin implementar aún");
+
+        
     }
 }
 
@@ -302,3 +296,15 @@ export function prediccionMedia (vecinosSeleccionados: datosType[], mediaUsuario
  * Los vecinos seleccionados en el proceso de predicción.
  * El cálculo de cada predicción de la matriz de utilidad en base a los vecinos seleccionados.
  */
+
+/**
+ * 
+ * 
+
+- 7 5 7 -
+4 4 6 6 -
+0 2 4 5 5
+3 - 6 7 7
+
+
+*/

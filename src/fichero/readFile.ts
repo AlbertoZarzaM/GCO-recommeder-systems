@@ -43,14 +43,47 @@ export function leerArchivo(ruta: string): (number | '-')[][] {
       matriz.push(lineaFloat);
     }
     
-    console.log('Matriz', matriz);
-    return matriz;
+    console.log('Matriz sin normalizar', matriz);
+    return normalizarMatriz(matriz, minVal, maxVal);
   } catch (error) {
     console.error('Error al leer el archivo');
     process.exit(1);
   }
 }
 
+/**
+ * Función que normaliza la matriz entre 0 y 1
+ * @params matriz_aux matriz a normalizar
+ * @params minVal valor mínimo de la matriz
+ * @params maxVal valor máximo de la matriz
+ * @returns matriz normalizada entre 0 y 1.
+ */
+export function normalizarMatriz(matriz_aux: (number | '-')[][], minVal: number, maxVal: number) : (number | '-')[][] {
+  let matriz_normalizada: (number | '-')[][] = [];
+
+  // Recorremos la matriz
+  for (let i = 0; i < matriz_aux.length; i++) {
+    let fila: (number | '-')[] = [];
+    for (let j = 0; j < matriz_aux[i].length; j++) {
+      if (matriz_aux[i][j] == '-') {
+        fila.push('-');
+      } 
+      else {
+        fila.push(((matriz_aux[i][j] as number) - minVal) / (maxVal - minVal))
+      }
+    }
+    matriz_normalizada.push(fila);
+  }
+  console.log('Matriz normalizada', matriz_normalizada);
+  return matriz_normalizada;
+}
 
 
-//leerArchivo('./fichero-ejemplo.txt'); // Reemplaza 'archivo.txt' con la ruta de tu archivo.
+//ALBERTO FUNCION ITERAR SEGUN LOS GUIONES QUE HAYA EN LA MATRIZ 
+
+
+
+
+
+
+// leerArchivo('./diapositivas.txt'); // Reemplaza 'archivo.txt' con la ruta de tu archivo.
