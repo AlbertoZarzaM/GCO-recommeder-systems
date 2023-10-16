@@ -47,8 +47,8 @@ export function leerArchivo(ruta: string): (number | '-')[][] {
     
     console.log('Matriz sin normalizar', matriz);
    
-    // return normalizarMatriz(matriz, minVal, maxVal);
-    return matriz;
+    return normalizarMatriz(matriz, minVal, maxVal);
+    //return matriz;
   } catch (error) {
     console.error('Error al leer el archivo');
     process.exit(1);

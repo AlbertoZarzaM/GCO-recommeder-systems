@@ -240,16 +240,20 @@ export function prediccionSimple(vecinosSeleccionados: datosType[], fila: number
   let denominador: number = 0;
   for (const vecino of vecinosSeleccionados) {
     numerador += vecino.similitud * vecino.valor;
+    console.log('vecino similitud: ', vecino.similitud);
+    console.log('vecino valor: ', vecino.valor);
     // valor absoluto de la similitud
     denominador += Math.abs(vecino.similitud);
   }
+  console.log('numerador: ', numerador);
+  console.log('denominador: ', denominador);
   var prediccion: number = numerador / denominador;
   
   console.log('Prediccion: ', prediccion);
 
   // Actualizar prediccion matrizResultado redondeado a 3 decimales
 
-  prediccion = Math.round(prediccion * 1000) / 1000;
+  //prediccion = Math.round(prediccion * 1000) / 1000;
   matrizResultado[fila][columna] = prediccion;
 
 }
@@ -269,7 +273,7 @@ export function prediccionMedia(vecinosSeleccionados: datosType[], mediaprincipa
   
   console.log('prediccion: ', prediccion);
 
-  prediccion = Math.round(prediccion * 1000) / 1000;
+  //prediccion = Math.round(prediccion * 1000) / 1000;
   matrizResultado[fila][columna] = prediccion;
   // Actualizar prediccion matrizResultado
 }

@@ -91,7 +91,7 @@ function inicial() : void {
                     console.log('Matriz Resultado normalizada:');
                     console.log(matrizResultado);
 
-                    // desnormalizarMatriz(matrizResultado, minVal, maxVal);
+                    desnormalizarMatriz(matrizResultado, minVal, maxVal);
 
                     rl.close();
                 });
