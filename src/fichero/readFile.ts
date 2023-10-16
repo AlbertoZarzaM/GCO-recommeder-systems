@@ -79,11 +79,32 @@ export function normalizarMatriz(matriz_aux: (number | '-')[][], minVal: number,
 }
 
 
-//ALBERTO FUNCION ITERAR SEGUN LOS GUIONES QUE HAYA EN LA MATRIZ 
 
+/**
+ * Función que desnormaliza la matriz entre 0 y 1 a su valor original
+ * @params matrizNormalizada matriz a desnormalizar
+ * @params minVal valor mínimo de la matriz
+ * @params maxVal valor máximo de la matriz
+ */
+export function desnormalizarMatriz(matrizNormalizada: (number | '-')[][], minVal: number, maxVal: number): (number | '-')[][] {
+  let matrizDesnormalizada: (number | '-')[][] = [];
 
+  // Recorremos la matriz
+  for (let i = 0; i < matrizNormalizada.length; i++) {
+    let fila: (number | '-')[] = [];
+    for (let j = 0; j < matrizNormalizada[i].length; j++) {
+      if (matrizNormalizada[i][j] == '-') {
+        fila.push('-');
+      } 
+      else {
+        fila.push(((matrizNormalizada[i][j] as number) * (maxVal - minVal)) + minVal);
+      }
+    }
+    matrizDesnormalizada.push(fila);
+  }
+  console.log('Matriz desnormalizada', matrizDesnormalizada);
+  return matrizDesnormalizada;
+}
 
-
-
-
+// leerArchivo('../../diapositivas.txt');
 // leerArchivo('./diapositivas.txt'); // Reemplaza 'archivo.txt' con la ruta de tu archivo.

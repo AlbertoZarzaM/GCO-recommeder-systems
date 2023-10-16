@@ -3,7 +3,7 @@
  * Gestión del fichero de entrada
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.normalizarMatriz = exports.leerArchivo = exports.maxVal = exports.minVal = void 0;
+exports.desnormalizarMatriz = exports.normalizarMatriz = exports.leerArchivo = exports.maxVal = exports.minVal = void 0;
 // npm install fs-extra
 var fs = require("fs");
 // valor minimo de puntuacion asignable por un usuario a un item
@@ -36,8 +36,9 @@ function leerArchivo(ruta) {
             }
             matriz.push(lineaFloat);
         }
-        console.log('Matriz', matriz);
-        return matriz;
+        console.log('Matriz sin normalizar', matriz);
+        desnormalizarMatriz(normalizarMatriz(matriz, exports.minVal, exports.maxVal), exports.minVal, exports.maxVal);
+        return normalizarMatriz(matriz, exports.minVal, exports.maxVal);
     }
     catch (error) {
         console.error('Error al leer el archivo');
@@ -47,7 +48,9 @@ function leerArchivo(ruta) {
 exports.leerArchivo = leerArchivo;
 /**
  * Función que normaliza la matriz entre 0 y 1
- * Recibe una matriz de números y guiones, valor mínimo y valor máximo
+ * @params matriz_aux matriz a normalizar
+ * @params minVal valor mínimo de la matriz
+ * @params maxVal valor máximo de la matriz
  * @returns matriz normalizada entre 0 y 1.
  */
 function normalizarMatriz(matriz_aux, minVal, maxVal) {
@@ -65,27 +68,32 @@ function normalizarMatriz(matriz_aux, minVal, maxVal) {
         }
         matriz_normalizada.push(fila);
     }
+    console.log('Matriz normalizada', matriz_normalizada);
     return matriz_normalizada;
 }
 exports.normalizarMatriz = normalizarMatriz;
-//ALBERTO FUNCION ITERAR SEGUN LOS GUINES QUE HAYA EN LA MATRIZ 
-//? TAREAS
-/**
- * guardar todas las posiciones de los guiones en una cola
- * normalizar la matriz entre 0 y 1.
- *
- * ! Decidir si ir actualizando los valores de la matriz o seguir con la original.
- * ? Se utilizan las columnas que tienen guión?
- *
- * 1 2 - 3 4
- * - 2 3 4 5
- * 1 2 3 4 -
- *
- * ¿se quitan todas las columnas con guion?
- * ¿solo se quitan entre las filas que se están comparando?
- *
- * Al final desnormalizar la matriz
- * Hacer las funciones iterativas
- *
- */
-//leerArchivo('./fichero-ejemplo.txt'); // Reemplaza 'archivo.txt' con la ruta de tu archivo.
+function desnormalizarMatriz(matrizNormalizada, minVal, maxVal) {
+    var matrizDesnormalizada = [];
+    // Recorremos la matriz
+    for (var i = 0; i < matrizNormalizada.length; i++) {
+        var fila = [];
+        for (var j = 0; j < matrizNormalizada[i].length; j++) {
+            if (matrizNormalizada[i][j] == '-') {
+                fila.push('-');
+            }
+            else {
+                // minVal=1, maxVal=5
+                // 2 desnormalizada = 0.25 normalizada
+                console.log('valor*(max-min)+min');
+                console.log(matrizNormalizada[i][j], '*', maxVal, '-', minVal, '+', minVal, '=', (matrizNormalizada[i][j] * (maxVal - minVal)) + minVal);
+                fila.push((matrizNormalizada[i][j] * (maxVal - minVal)) + minVal);
+            }
+        }
+        matrizDesnormalizada.push(fila);
+    }
+    console.log('Matriz desnormalizada', matrizDesnormalizada);
+    return matrizDesnormalizada;
+}
+exports.desnormalizarMatriz = desnormalizarMatriz;
+leerArchivo('../../diapositivas.txt');
+// leerArchivo('./diapositivas.txt'); // Reemplaza 'archivo.txt' con la ruta de tu archivo.
