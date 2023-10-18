@@ -94,7 +94,9 @@ export function desnormalizarMatriz(matrizNormalizada: (number | '-')[][], minVa
         fila.push('-');
       } 
       else {
-        fila.push(((matrizNormalizada[i][j] as number) * (maxVal - minVal)) + minVal);
+        let elementoSinRedondeo = ((matrizNormalizada[i][j] as number) * (maxVal - minVal)) + minVal;
+        let elementoRedondeado = Math.round(elementoSinRedondeo * 1000) / 1000;
+        fila.push(elementoRedondeado);
       }
     }
     matrizDesnormalizada.push(fila);

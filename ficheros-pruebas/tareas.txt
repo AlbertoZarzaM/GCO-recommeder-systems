@@ -8,8 +8,6 @@
  * HECHO --> Se utilizan las columnas que tienen guión --> NO
  * 
 
- * decimales en la normalización, trabajamos con todos o recortamos a 3?
- * Arreglar problema 3 decimales en prediccionSimple y prediccionMedia
  * si al final de las líneas hay un espacio da problemas, mirar como evitarlo.
 
 
