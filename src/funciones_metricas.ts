@@ -27,7 +27,7 @@ export function guion(matriz: (number | '-')[][]): [number, number][] {
       }
     }
   }
-  //?console.log("Posiciones de los guiones: ", posiciones);
+  //console.log("Posiciones de los guiones: ", posiciones);
   return posiciones;
 }
 
@@ -68,9 +68,9 @@ export function gestionarLlamadasSimilitudes(filasConGuion: number[], matriz: (n
     let resultado: [datosType[], number] = filtradoMetrica(matriz, fila_actual);
 
     // * Pasamos a resolver las incógnitas de esta fila
-    // ? actualizamos matriz inicial? serían las predicciones adecuadas?
+    // no actualizamos matriz inicial
     for (let k = 0; k < columnasConGuion.length; k++) { //* Predicción para cada una de las incógnitas de la fila
-     prediccion(resultado[0], resultado[1], columnasConGuion[k], matriz, fila_actual);
+      prediccion(resultado[0], resultado[1], columnasConGuion[k], matriz, fila_actual);
     }
 
   }
@@ -103,9 +103,10 @@ export function filtradoMetrica (matriz: (number | '-')[][], filaPrincipal: numb
         // si hay un guion no hacemos nada, pasamos a la siguiente columna.
       }
 
-      //? comprobamos que hay suficientes valores para comparar
+      // comprobamos que hay suficientes valores para comparar
       if (principalFilaComparar.length == 0 || vecinoSinGuiones.length == 0) {
         console.log('No se puede comparar, no hay suficientes valores');
+        process.exit(1);
       }
       
       if (metrica === 1) { //* Pearson
@@ -114,13 +115,15 @@ export function filtradoMetrica (matriz: (number | '-')[][], filaPrincipal: numb
         let datosUsuario: datosType = { usuario: i, media: media(vecino) , similitud: similitud };
         datosFinalesUsuario.push(datosUsuario);
         metricaString = "Pearson";
-      } else if (metrica === 2) { //* Distancia coseno
+      } 
+      else if (metrica === 2) { //* Distancia coseno
         let similitud = distanciaCoseno(principalFilaCompararSinGuiones, vecinoSinGuiones);
         coeficientes.push(similitud);
         let datosUsuario: datosType = { usuario: i, media: media(vecino) , similitud: similitud };
         datosFinalesUsuario.push(datosUsuario);
         metricaString = "Coseno";
-      } else if (metrica === 3) {//* Distancia euclidea
+      } 
+      else if (metrica === 3) { //* Distancia euclidea
         let similitud = distanciaEuclidea(principalFilaCompararSinGuiones, vecinoSinGuiones);
         coeficientes.push(similitud);
         let datosUsuario: datosType = { usuario: i, media: media(vecino) , similitud: similitud };
@@ -137,8 +140,7 @@ export function filtradoMetrica (matriz: (number | '-')[][], filaPrincipal: numb
 }
 
 
-//  * Distancia coseno.
-//  */
+// * Distancia coseno.
 export function distanciaCoseno(arrayA: (number | '-')[], arrayB: (number | '-')[]): number {
 
   let numerador: number = 0;
@@ -166,13 +168,13 @@ export function distanciaCoseno(arrayA: (number | '-')[], arrayB: (number | '-')
   console.log('distancia: ', distancia);
   // habría que llamar a la función para cada comparación.
   // Además de guardar el nuevo valor como similitud.
+  //? Creo que está resuelto, en la función donde se llama a esta matriz se guarda el valor de la similitud que se retorna.
   return distancia;
 
 }
 
 
-//  * Distancia Euclidea.
-//  */
+// * Distancia Euclidea.
 export function distanciaEuclidea(arrayA: (number | '-')[], arrayB: (number | '-')[]): number {
 
   //? sqrt(sumatorio (r(u,i) - r(v,i))^2)
@@ -207,7 +209,7 @@ export function media(usuario: (number|'-')[]): number {
  */
 
 export function prediccion(datos: datosType[], mediaprincipalFilaComparar: number, posicionColumna: number, matriz: (number | '-')[][], numeroFila: number): void {
-  // Ordenar los datos de mayor a menor
+  // Ordenar los datos de mayor a menor (similitudes)
   datos.sort((a, b) => b.similitud - a.similitud);
   // Seleccionar los vecinos
   let vecinosSeleccionados: datosType[] = [];
@@ -216,19 +218,26 @@ export function prediccion(datos: datosType[], mediaprincipalFilaComparar: numbe
       datos[i].valor = matriz[datos[i].usuario][posicionColumna] as number;
       vecinosSeleccionados.push(datos[i]);
     }
-    else { //! PENDIENTE DEL CORREO CON LA CONTESTACIÓN.
+    else { //* Si el vecino tiene una incógnita en esa columna, se descarta.
       continue;
     }
   }
-
-  // si prediccion es false, se calcula con los valores
-  // si prediccion es true, se calcula con la media
-  if (prediccionBool === false) {
-    // (sumatorio de (similitud * valor)) / sumatorio de similitudes
-    prediccionSimple(vecinosSeleccionados, numeroFila, posicionColumna);
+  
+  //? Al final del todo, si todos los vecinos tienen incógnitas en esa columna, no se puede hacer.
+  if (vecinosSeleccionados.length == 0) {
+    console.log('No se puede hacer la predicción para la incógnita', numeroFila, posicionColumna, 'porque todos los vecinos tienen incógnitas en esa columna');
+    process.exit(1);
   }
-  else {
-    prediccionMedia(vecinosSeleccionados, mediaprincipalFilaComparar, numeroFila, posicionColumna);
+  else  {
+    // si prediccion es false, se calcula con los valores
+    // si prediccion es true, se calcula con la media
+    if (prediccionBool === false) {
+      // (sumatorio de (similitud * valor)) / sumatorio de similitudes
+      prediccionSimple(vecinosSeleccionados, numeroFila, posicionColumna);
+    }
+    else {
+      prediccionMedia(vecinosSeleccionados, mediaprincipalFilaComparar, numeroFila, posicionColumna);
+    }
   }
 
 }
@@ -252,7 +261,7 @@ export function prediccionSimple(vecinosSeleccionados: datosType[], fila: number
   console.log('Prediccion: ', prediccion);
 
   // Actualizar prediccion matrizResultado redondeado a 3 decimales
-
+  //! Arreglar tema 3 decimales
   //prediccion = Math.round(prediccion * 1000) / 1000;
   matrizResultado[fila][columna] = prediccion;
 
@@ -274,6 +283,7 @@ export function prediccionMedia(vecinosSeleccionados: datosType[], mediaprincipa
   console.log('prediccion: ', prediccion);
 
   //prediccion = Math.round(prediccion * 1000) / 1000;
+  //! Arreglar tema 3 decimales
   matrizResultado[fila][columna] = prediccion;
   // Actualizar prediccion matrizResultado
 }
