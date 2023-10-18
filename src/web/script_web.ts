@@ -1,5 +1,9 @@
-import {inicial} from "./main";
-import {leerArchivo} from "./fichero/readFile";
+import {inicial} from "../main";
+import {leerArchivo} from "../fichero/readFile";
+
+document.getElementById('procesarButton').addEventListener('click', function() {
+  procesado();
+});
 
 
 function procesado() {
@@ -49,8 +53,7 @@ function procesado() {
 function procesarFicheroOpciones(fileContent: string, opciones: [number, number, number]) {
   console.log("Contenido del archivo:", fileContent)
   console.log("Opciones:", opciones)
-  //let matriz: (number | '-')[][] = leerArchivo(fileContent);
-  let matriz = [[1,2,3],[4,5,6],[7,8,9]];
+  let matriz: (number | '-')[][] = leerArchivo(fileContent);
+  //let matriz = [[1,2,3],[4,5,6],[7,8,9]];
   inicial(matriz, opciones);
 }
-

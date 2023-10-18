@@ -262,7 +262,7 @@ export function prediccionSimple(vecinosSeleccionados: datosType[], fila: number
 
   // Actualizar prediccion matrizResultado redondeado a 3 decimales
   //! Arreglar tema 3 decimales
-  //prediccion = Math.round(prediccion * 1000) / 1000;
+  // prediccion = Math.round(prediccion * 1000) / 1000;
   matrizResultado[fila][columna] = prediccion;
 
 }
@@ -282,7 +282,7 @@ export function prediccionMedia(vecinosSeleccionados: datosType[], mediaprincipa
   
   console.log('prediccion: ', prediccion);
 
-  //prediccion = Math.round(prediccion * 1000) / 1000;
+  // prediccion = Math.round(prediccion * 1000) / 1000;
   //! Arreglar tema 3 decimales
   matrizResultado[fila][columna] = prediccion;
   // Actualizar prediccion matrizResultado

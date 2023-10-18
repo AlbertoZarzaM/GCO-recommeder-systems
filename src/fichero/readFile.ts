@@ -1,7 +1,3 @@
-/**
- * Gestión del fichero de entrada
- */
-
 import * as fs from 'fs';
 
 // valor minimo de puntuacion asignable por un usuario a un item
@@ -12,10 +8,9 @@ export let maxVal: number = 0;
 
 
 
-export function leerArchivo(contenido: string): (number | '-')[][] {
+export function leerArchivo(ruta: string): (number | '-')[][] {
   try {
-    console.log("dentro ded ")
-    //const contenido = fs.readFileSync(ruta, 'utf-8');
+    const contenido = fs.readFileSync(ruta, 'utf-8');
     const lineas = contenido.split('\n'); // Divide el contenido en lineas
 
     

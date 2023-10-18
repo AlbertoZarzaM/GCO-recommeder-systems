@@ -2,11 +2,12 @@ import { desnormalizarMatriz, leerArchivo, maxVal, minVal } from "./fichero/read
 import {filasGuion, matrizResultado } from "./funciones_metricas";
 import { guion } from "./funciones_metricas";
 import { gestionarLlamadasSimilitudes } from "./funciones_metricas";
+import yargs from 'yargs';
 
 
 export var metrica: number = 0;
 export var numeroVecinos: number = 0;
-export var nombreFichero: string = ' ';
+export var nombreFichero: string = " ";
 export var prediccionBool: boolean = false;
 
 
@@ -49,24 +50,42 @@ export function inicial(matrizOriginal: (number | '-')[][], opciones: [number, n
 }
 
 
+function opcionesPOSIX() {
+    const argv = yargs(process.argv.slice(0))
+        .option('f', {
+            alias: 'file',
+            describe: 'Nombre del fichero',
+            type: 'string',
+            demandOption: true,
+        })
+        .option('m', {
+            alias: 'metric',
+            describe: 'Número de la métrica',
+            type: 'number',
+            demandOption: true,
+        })
+        .option('n', {
+            alias: 'neighbors',
+            describe: 'Número de vecinos',
+            type: 'number',
+            demandOption: true,
+        })
+        .option('t', {
+            alias: 'type',
+            describe: 'Tipo de predicción',
+            type: 'number',
+            demandOption: true,
+        })
+        .option('help', {
+            describe: 'Muestra la ayuda',
+        }).argv;
+    nombreFichero = argv['f'];
+    metrica = argv['m'];
+    numeroVecinos = argv['n'];
+    prediccionBool = argv['t']=== 1 ? false : true;
 
+    // Llamada a la función inicial
+    inicial(leerArchivo(nombreFichero), [metrica, numeroVecinos, prediccionBool ? 0 : 1]);
+}
 
-/**
- * REQUISITOS 
- * La matriz de utilidad con la predicción de los elementos faltantes en la matriz original.
- * La similaridad entre cada usuario y sus vecinos de acuerdo a la métrica elegida.
- * Los vecinos seleccionados en el proceso de predicción.
- * El cálculo de cada predicción de la matriz de utilidad en base a los vecinos seleccionados.
- */
-
-/**
- * 
- * 
-
-- 7 5 7 -
-4 4 6 6 -
-0 2 4 5 5
-3 - 6 7 7
-
-
-*/
+opcionesPOSIX();
