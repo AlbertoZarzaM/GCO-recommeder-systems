@@ -1,6 +1,7 @@
-import { leerArchivo } from "./fichero/readFile";
-import { minVal, maxVal } from "./fichero/readFile";
 import { metrica, numeroVecinos, prediccionBool} from "./main";
+import { salidaFichero } from "./main";
+import { escribirFichero } from "./fichero/readFile";
+
 
 import * as ss from 'simple-statistics';
 
@@ -14,6 +15,17 @@ export type datosType = {
   valor?: number // Valor de la columna de la incognita
 }
 
+export function matrizAString (matriz: (number | '-')[][]): string {
+ 
+  let matrizString = "";
+  for(let i = 0; i < matriz.length; i++){
+      for(let j = 0; j < matriz[i].length; j++){
+          matrizString += matriz[i][j] + " ";
+      }
+      matrizString += "\n";
+  }
+  return matrizString;
+}
 
 /**
  * Funcion que localiza y extrae los guiones de la matriz.
@@ -83,7 +95,12 @@ export function filtradoMetrica (matriz: (number | '-')[][], filaPrincipal: numb
   let datosFinalesUsuario: datosType[] = [];
 
   const principalFilaComparar: (number | '-')[] = matriz[filaPrincipal]; //* Obtención de la fila del usuario a comparar con los demás
-  console.log('Usuario a comparar: ', principalFilaComparar);
+
+  if(salidaFichero) {
+    escribirFichero('Fila principal a comparar: ' + principalFilaComparar + '\n' + 'Fila: ' + filaPrincipal + '\n');
+  } else {
+    console.log('USUARIO A COMPARAR: ', principalFilaComparar, ' Fila: ', filaPrincipal);
+  }
 
   const coeficientes: number[] = []; // similitudes.
   let metricaString: string = "";
@@ -134,7 +151,11 @@ export function filtradoMetrica (matriz: (number | '-')[][], filaPrincipal: numb
     }
   }
 
-  console.log('Similitudes ', metricaString , " ", coeficientes);
+  if(salidaFichero) {
+    escribirFichero('Similitudes ' + metricaString + ' ' + coeficientes + '\n');
+  } else {
+    console.log('Similitudes ', metricaString , " ", coeficientes);  //! IMPRIMIR SEGUNGUION 
+  }
   return [datosFinalesUsuario, media(principalFilaComparar)];
 
 }
@@ -160,12 +181,9 @@ export function distanciaCoseno(arrayA: (number | '-')[], arrayB: (number | '-')
   }
 
   denominador = Math.sqrt(denominadorA) * Math.sqrt(denominadorB);
-  console.log('numerador: ', numerador);
-  console.log('denominador: ', denominador);
 
   const distancia = numerador / denominador;
 
-  console.log('distancia: ', distancia);
   // habría que llamar a la función para cada comparación.
   // Además de guardar el nuevo valor como similitud.
   //? Creo que está resuelto, en la función donde se llama a esta matriz se guarda el valor de la similitud que se retorna.
@@ -199,8 +217,11 @@ export function media(usuario: (number|'-')[]): number {
       usuarioSinGuion.push(dato);
     }
   }
-  
-  return ss.mean(usuarioSinGuion);
+  let mediaUsuario: number = 0;
+  if (usuarioSinGuion.length != 0) {
+  mediaUsuario = ss.mean(usuarioSinGuion);
+  }
+  return mediaUsuario; 
 }
 
 
@@ -229,6 +250,15 @@ export function prediccion(datos: datosType[], mediaprincipalFilaComparar: numbe
     process.exit(1);
   }
   else  {
+
+    if (salidaFichero) {
+      let vecinoString: string = vecinosSeleccionados.map((vecino) => vecino.usuario).join(', ');
+      escribirFichero('Vecinos seleccionados (número de fila): ' + vecinoString + '\n');
+    }
+    else {
+      console.log('Vecinos seleccionados: ', vecinosSeleccionados); 
+    }  
+
     // si prediccion es false, se calcula con los valores
     // si prediccion es true, se calcula con la media
     if (prediccionBool === false) {
@@ -249,20 +279,20 @@ export function prediccionSimple(vecinosSeleccionados: datosType[], fila: number
   let denominador: number = 0;
   for (const vecino of vecinosSeleccionados) {
     numerador += vecino.similitud * vecino.valor;
-    console.log('vecino similitud: ', vecino.similitud);
-    console.log('vecino valor: ', vecino.valor);
     // valor absoluto de la similitud
     denominador += Math.abs(vecino.similitud);
   }
-  console.log('numerador: ', numerador);
-  console.log('denominador: ', denominador);
+
   var prediccion: number = numerador / denominador;
   
-  console.log('Prediccion: ', prediccion);
+  if (salidaFichero) {
+    escribirFichero('Prediccion: ' + prediccion + '\n');
+  } else {
+    console.log('Prediccion: ', prediccion); //! IMPRIMIR SEGUN GUION
+  }
 
-  // Actualizar prediccion matrizResultado redondeado a 3 decimales
-  //! Arreglar tema 3 decimales
-  // prediccion = Math.round(prediccion * 1000) / 1000;
+
+
   matrizResultado[fila][columna] = prediccion;
 
 }
@@ -280,10 +310,15 @@ export function prediccionMedia(vecinosSeleccionados: datosType[], mediaprincipa
   }
   var prediccion: number = media + (numerador / denominador);
   
-  console.log('prediccion: ', prediccion);
+  if (salidaFichero) {
+    escribirFichero('Prediccion: ' + prediccion + '\n');
+  } else {
+    console.log('prediccion: ', prediccion); 
+  }
 
-  // prediccion = Math.round(prediccion * 1000) / 1000;
-  //! Arreglar tema 3 decimales
+
   matrizResultado[fila][columna] = prediccion;
   // Actualizar prediccion matrizResultado
 }
+
+

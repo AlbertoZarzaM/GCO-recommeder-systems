@@ -1,4 +1,7 @@
 import * as fs from 'fs';
+import { nombreFicheroSalida } from '../main';
+import { salidaFichero } from '../main';
+import { matrizAString } from '../funciones_metricas';
 
 // valor minimo de puntuacion asignable por un usuario a un item
 export let minVal: number = 0;
@@ -6,7 +9,14 @@ export let minVal: number = 0;
 // valor maximo de puntuacion asignable por un usuario a un item
 export let maxVal: number = 0;
 
-
+export function escribirFichero (contenido: string): void {
+  contenido = contenido + '\n';
+  fs.appendFile(nombreFicheroSalida, contenido, (error) => {
+    if (error) {
+      console.error('Error al escribir en el archivo:', error);
+    }
+  });
+}
 
 export function leerArchivo(ruta: string): (number | '-')[][] {
   try {
@@ -16,14 +26,19 @@ export function leerArchivo(ruta: string): (number | '-')[][] {
     
     minVal = parseFloat(lineas.shift()); // Valor mínimo
     maxVal = parseFloat(lineas.shift()); // Valor máximo
-    
-    console.log('Valor minimo:', minVal);
-    console.log('Valor maximo:', maxVal);
-    
+    if (salidaFichero) {
+      escribirFichero('Valor minimo: ' + minVal);
+      escribirFichero('Valor maximo: ' + maxVal);
+    } else {
+      console.log('Valor minimo:', minVal);
+      console.log('Valor maximo:', maxVal);
+    }
+
     const matriz: (number | '-')[][] = [];
     
     for (const linea of lineas) {
       // Procesa cada linea
+      
       const elementosArray = linea.split(" ");
       // console.log('Linea:', elementosArray);
 
@@ -31,15 +46,18 @@ export function leerArchivo(ruta: string): (number | '-')[][] {
       for (const elemento of elementosArray) {
         if (elemento == '-') {
             lineaFloat.push(elemento);
-        } else {
-            lineaFloat.push(parseFloat(elemento));
+        } else if(!isNaN(parseFloat(elemento))) {
+          lineaFloat.push(parseFloat(elemento));
         }
       }
       matriz.push(lineaFloat);
     }
-    
-    console.log('Matriz sin normalizar', matriz);
-   
+    if (salidaFichero) {
+      escribirFichero('Matriz sin normalizar \n' + matrizAString(matriz));
+    } else {
+      console.log('Matriz sin normalizar', matriz);
+    }
+
     return normalizarMatriz(matriz, minVal, maxVal);
     //return matriz;
   } catch (error) {
@@ -71,7 +89,12 @@ export function normalizarMatriz(matriz_aux: (number | '-')[][], minVal: number,
     }
     matriz_normalizada.push(fila);
   }
-  console.log('Matriz normalizada', matriz_normalizada);
+
+  if (salidaFichero) {
+    escribirFichero('Matriz normalizada \n' + matrizAString(matriz_normalizada));
+  } else {
+    console.log('Matriz normalizada', matriz_normalizada);
+  }
   return matriz_normalizada;
 }
 
@@ -101,7 +124,12 @@ export function desnormalizarMatriz(matrizNormalizada: (number | '-')[][], minVa
     }
     matrizDesnormalizada.push(fila);
   }
-  console.log('Matriz desnormalizada', matrizDesnormalizada);
+  
+  if(salidaFichero){
+    escribirFichero('Matriz desnormalizada \n' + matrizAString(matrizDesnormalizada));
+  } else {
+    console.log('Matriz desnormalizada', matrizDesnormalizada);
+  }
   return matrizDesnormalizada;
 }
 
