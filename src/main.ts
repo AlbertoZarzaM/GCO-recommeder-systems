@@ -70,7 +70,14 @@ function opcionesPOSIX() {
         .option('m', {
             alias: 'metric',
             describe: 'Número de la métrica',
+            coerce: (arg) => {
+                if (![1, 2, 3].includes(arg)) {
+                  throw new Error('La opción debe ser 1, 2 o 3');
+                }
+                return arg;
+            },
             type: 'number',
+            choices: ["(1) Pearson", "(2) Coseno", "(3) Euclidea"],
             demandOption: true,
         })
         .option('n', {
@@ -82,7 +89,14 @@ function opcionesPOSIX() {
         .option('t', {
             alias: 'type',
             describe: 'Tipo de predicción',
+            coerce: (arg) => {
+                if (![1, 2].includes(arg)) {
+                  throw new Error('La opción debe ser (1) Predicción simple o Predicción de diferencia con media (2)');
+                }
+                return arg;
+            },
             type: 'number',
+            choices: ["(1) Predicción simple", "Predicción de diferencia con media (2)"],
             demandOption: true,
         })
         .option('o', {
