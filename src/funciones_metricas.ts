@@ -336,7 +336,7 @@ export function prediccionSimple(vecinosSeleccionados: datosType[], fila: number
   if (salidaFichero) {
     escribirFichero('Prediccion: ' + prediccion + '\n');
   } else {
-    console.log('Prediccion: ', prediccion); //! IMPRIMIR SEGUN GUION
+    console.log('Prediccion: ', prediccion);
   }
 
 
