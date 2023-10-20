@@ -40,7 +40,6 @@ export function leerArchivo(ruta: string): (number | '-')[][] {
       // Procesa cada linea
       
       const elementosArray = linea.split(" ");
-      // console.log('Linea:', elementosArray);
 
       var lineaFloat:(number | '-') [] = [];
       for (const elemento of elementosArray) {
@@ -59,7 +58,6 @@ export function leerArchivo(ruta: string): (number | '-')[][] {
     }
 
     return normalizarMatriz(matriz, minVal, maxVal);
-    //return matriz;
   } catch (error) {
     console.error('Error al leer el archivo');
     process.exit(1);
@@ -132,6 +130,3 @@ export function desnormalizarMatriz(matrizNormalizada: (number | '-')[][], minVa
   }
   return matrizDesnormalizada;
 }
-
-// leerArchivo('../../diapositivas.txt');
-// leerArchivo('./diapositivas.txt'); // Reemplaza 'archivo.txt' con la ruta de tu archivo.

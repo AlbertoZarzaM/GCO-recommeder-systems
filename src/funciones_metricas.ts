@@ -8,6 +8,13 @@ import * as ss from 'simple-statistics';
 export var matrizResultado: (number | '-')[][] = [];
 export var MatrizSinNormalizar: (number | '-')[][] = [];
 
+/**
+ * datosType: tipo de datos que se van a utilizar para guardar los datos de cada usuario.
+ * usuario: número de fila del usuario.
+ * media: media de los valores del usuario de la matriz de utilidad.
+ * similitud: similitud entre el usuario y el usuario de la fila con la incógnita.
+ * valor: valor de la columna de la incógnita.
+ */
 export type datosType = {
   usuario: number, // Número de fila del usuario
   media: number,  // Media de los valores del usuario de la matriz de utilidad
@@ -15,6 +22,11 @@ export type datosType = {
   valor?: number // Valor de la columna de la incognita
 }
 
+/**
+ * Funcion que pasa la matriz de utilidad a un string.
+ * @param matriz matriz de utilidad
+ * @returns matriz en formato string
+ */
 export function matrizAString (matriz: (number | '-')[][]): string {
  
   let matrizString = "";
@@ -39,7 +51,6 @@ export function guion(matriz: (number | '-')[][]): [number, number][] {
       }
     }
   }
-  //console.log("Posiciones de los guiones: ", posiciones);
   return posiciones;
 }
 
@@ -60,9 +71,7 @@ export function filasGuion(posiciones: [number, number][]): number[] {
  * función que se encargar de llamar las veces necesarias a la función que calcula la similitud para cada uno de los usuarios principales, es decir, con incógnitas.
  */
 export function gestionarLlamadasSimilitudes(filasConGuion: number[], matriz: (number | '-')[][], posicionesGuiones: [number, number][]) {
-  // primer for, tantas iteraciones como filas con guiones.
-  // sólo hacemos una vez por fila
-  // comparamos esta fila con el resto de filas
+
   matrizResultado = matriz;
   
   for (let i = 0; i < filasConGuion.length; i++) {
@@ -80,7 +89,6 @@ export function gestionarLlamadasSimilitudes(filasConGuion: number[], matriz: (n
     let resultado: [datosType[], number] = filtradoMetrica(matriz, fila_actual);
 
     // * Pasamos a resolver las incógnitas de esta fila
-    // no actualizamos matriz inicial
     for (let k = 0; k < columnasConGuion.length; k++) { //* Predicción para cada una de las incógnitas de la fila
       prediccion(resultado[0], resultado[1], columnasConGuion[k], matriz, fila_actual);
     }
@@ -89,7 +97,11 @@ export function gestionarLlamadasSimilitudes(filasConGuion: number[], matriz: (n
 }
 
 
-
+/**
+ * filtradoMetrica: función que se encarga de filtrar la matriz de utilidad para obtener los datos necesarios para calcular la similitud entre el usuario principal y el resto de usuarios.
+ * @param matriz matriz de utilidad
+ * @param filaPrincipal fila del usuario principal
+ */
 export function filtradoMetrica (matriz: (number | '-')[][], filaPrincipal: number): [datosType[], number] {
   let matrizCorrelacion: number[][] = [];
   let datosFinalesUsuario: datosType[] = [];
@@ -154,12 +166,18 @@ export function filtradoMetrica (matriz: (number | '-')[][], filaPrincipal: numb
   if(salidaFichero) {
     escribirFichero('Similitudes ' + metricaString + ' ' + coeficientes + '\n');
   } else {
-    console.log('Similitudes ', metricaString , " ", coeficientes);  //! IMPRIMIR SEGUNGUION 
+    console.log('Similitudes ', metricaString , " ", coeficientes); 
   }
   return [datosFinalesUsuario, media(principalFilaComparar)];
 
 }
 
+/**
+ * Función que calcula la correlación de Pearson.
+ * @param arrayA array de números
+ * @param arrayB array de números
+ * @returns correlación de Pearson
+ */
 export function correlacionPearson(arrayA: number[], arrayB:number[]): number {
     const cov = ss.sampleCovariance(arrayA, arrayB);
     const astd = ss.sampleStandardDeviation(arrayA);
@@ -174,7 +192,13 @@ export function correlacionPearson(arrayA: number[], arrayB:number[]): number {
 
 
 
-// * Distancia coseno.
+/**
+ * Función que calcula la distancia del coseno.
+ * @param arrayA array de números
+ * @param arrayB array de números
+ * @returns distancia del coseno
+ * 
+ */
 export function distanciaCoseno(arrayA: (number | '-')[], arrayB: (number | '-')[]): number {
 
   let numerador: number = 0;
@@ -197,15 +221,18 @@ export function distanciaCoseno(arrayA: (number | '-')[], arrayB: (number | '-')
 
   const distancia = numerador / denominador;
 
-  // habría que llamar a la función para cada comparación.
-  // Además de guardar el nuevo valor como similitud.
-  //? Creo que está resuelto, en la función donde se llama a esta matriz se guarda el valor de la similitud que se retorna.
   return distancia;
 
 }
 
 
-// * Distancia Euclidea.
+/**
+ * Función que calcula la distancia euclidea.
+ * @param arrayA array de números
+ * @param arrayB array de números
+ * @returns distancia euclidea
+ * 
+ */
 export function distanciaEuclidea(arrayA: (number | '-')[], arrayB: (number | '-')[]): number {
 
   //? sqrt(sumatorio (r(u,i) - r(v,i))^2)
@@ -222,7 +249,12 @@ export function distanciaEuclidea(arrayA: (number | '-')[], arrayB: (number | '-
   return resultado;
 }
 
-
+/**
+ * Función que calcula la media de un usuario.
+ * @param usuario array de números
+ * @returns media del usuario
+ * 
+ */
 export function media(usuario: (number|'-')[]): number {
   const usuarioSinGuion: number[] = [];
   for (const dato of usuario) {
@@ -241,7 +273,6 @@ export function media(usuario: (number|'-')[]): number {
 /**
  * Función que calcula una predicción. Simple o con la media.
  */
-
 export function prediccion(datos: datosType[], mediaprincipalFilaComparar: number, posicionColumna: number, matriz: (number | '-')[][], numeroFila: number): void {
   // Ordenar los datos de mayor a menor (similitudes)
   datos.sort((a, b) => b.similitud - a.similitud);
@@ -261,9 +292,7 @@ export function prediccion(datos: datosType[], mediaprincipalFilaComparar: numbe
   if (vecinosSeleccionados.length == 0) {
     console.log('No se puede hacer la predicción para la incógnita', numeroFila, posicionColumna, 'porque todos los vecinos tienen incógnitas en esa columna \nContinuan el resto de predicciones');
     matrizResultado[numeroFila][posicionColumna] = '-';
-  }
-  else  {
-
+  
     if (salidaFichero) {
       let vecinoString: string = vecinosSeleccionados.map((vecino) => vecino.usuario).join(', ');
       escribirFichero('Vecinos seleccionados (número de fila): ' + vecinoString + '\n');
@@ -285,7 +314,13 @@ export function prediccion(datos: datosType[], mediaprincipalFilaComparar: numbe
 
 }
 
-
+/**
+ * Función que calcula la predicción con los valores.
+ * @param vecinosSeleccionados vecinos seleccionados
+ * @param fila fila de la incógnita
+ * @param columna columna de la incógnita
+ * 
+ */
 export function prediccionSimple(vecinosSeleccionados: datosType[], fila: number, columna: number): void {
 
   let numerador: number = 0;
@@ -301,7 +336,7 @@ export function prediccionSimple(vecinosSeleccionados: datosType[], fila: number
   if (salidaFichero) {
     escribirFichero('Prediccion: ' + prediccion + '\n');
   } else {
-    console.log('Prediccion: ', prediccion);
+    console.log('Prediccion: ', prediccion); //! IMPRIMIR SEGUN GUION
   }
 
 
@@ -310,6 +345,15 @@ export function prediccionSimple(vecinosSeleccionados: datosType[], fila: number
 
 }
 
+/**
+ * Función que calcula la predicción con la media.
+ * @param vecinosSeleccionados vecinos seleccionados
+ * @param mediaprincipalFilaComparar media del usuario principal
+ * @param fila fila de la incógnita
+ * @param columna columna de la incógnita
+ * 
+ * 
+ */
 export function prediccionMedia(vecinosSeleccionados: datosType[], mediaprincipalFilaComparar: number, fila: number, columna: number): void {
 
   let numerador: number = 0;
@@ -331,6 +375,6 @@ export function prediccionMedia(vecinosSeleccionados: datosType[], mediaprincipa
 
 
   matrizResultado[fila][columna] = prediccion;
+  // Actualizar prediccion matrizResultado
+
 }
-
-
