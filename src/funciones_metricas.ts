@@ -127,7 +127,7 @@ export function filtradoMetrica (matriz: (number | '-')[][], filaPrincipal: numb
       }
       
       if (metrica === 1) { //* Pearson
-        let similitud = ss.sampleCorrelation(principalFilaCompararSinGuiones, vecinoSinGuiones);
+        let similitud = correlacionPearson(principalFilaCompararSinGuiones, vecinoSinGuiones);
         coeficientes.push(similitud);
         let datosUsuario: datosType = { usuario: i, media: media(vecino) , similitud: similitud };
         datosFinalesUsuario.push(datosUsuario);
@@ -159,6 +159,19 @@ export function filtradoMetrica (matriz: (number | '-')[][], filaPrincipal: numb
   return [datosFinalesUsuario, media(principalFilaComparar)];
 
 }
+
+export function correlacionPearson(arrayA: number[], arrayB:number[]): number {
+    const cov = ss.sampleCovariance(arrayA, arrayB);
+    const astd = ss.sampleStandardDeviation(arrayA);
+    const bstd = ss.sampleStandardDeviation(arrayB);
+    const mutiplicacion = astd * bstd;
+    if (mutiplicacion == 0) {
+      return 0;
+    } else {
+      return cov / mutiplicacion;
+    }
+}
+
 
 
 // * Distancia coseno.
@@ -246,8 +259,8 @@ export function prediccion(datos: datosType[], mediaprincipalFilaComparar: numbe
   
   //? Al final del todo, si todos los vecinos tienen incógnitas en esa columna, no se puede hacer.
   if (vecinosSeleccionados.length == 0) {
-    console.log('No se puede hacer la predicción para la incógnita', numeroFila, posicionColumna, 'porque todos los vecinos tienen incógnitas en esa columna');
-    process.exit(1);
+    console.log('No se puede hacer la predicción para la incógnita', numeroFila, posicionColumna, 'porque todos los vecinos tienen incógnitas en esa columna \nContinuan el resto de predicciones');
+    matrizResultado[numeroFila][posicionColumna] = '-';
   }
   else  {
 
@@ -288,7 +301,7 @@ export function prediccionSimple(vecinosSeleccionados: datosType[], fila: number
   if (salidaFichero) {
     escribirFichero('Prediccion: ' + prediccion + '\n');
   } else {
-    console.log('Prediccion: ', prediccion); //! IMPRIMIR SEGUN GUION
+    console.log('Prediccion: ', prediccion);
   }
 
 
@@ -318,7 +331,6 @@ export function prediccionMedia(vecinosSeleccionados: datosType[], mediaprincipa
 
 
   matrizResultado[fila][columna] = prediccion;
-  // Actualizar prediccion matrizResultado
 }
 
 
