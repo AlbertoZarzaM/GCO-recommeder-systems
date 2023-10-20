@@ -292,7 +292,7 @@ export function prediccion(datos: datosType[], mediaprincipalFilaComparar: numbe
   if (vecinosSeleccionados.length == 0) {
     console.log('No se puede hacer la predicción para la incógnita', numeroFila, posicionColumna, 'porque todos los vecinos tienen incógnitas en esa columna \nContinuan el resto de predicciones');
     matrizResultado[numeroFila][posicionColumna] = '-';
-  
+  } else {
     if (salidaFichero) {
       let vecinoString: string = vecinosSeleccionados.map((vecino) => vecino.usuario).join(', ');
       escribirFichero('Vecinos seleccionados (número de fila): ' + vecinoString + '\n');
@@ -300,7 +300,7 @@ export function prediccion(datos: datosType[], mediaprincipalFilaComparar: numbe
     else {
       console.log('Vecinos seleccionados: ', vecinosSeleccionados); 
     }  
-
+  
     // si prediccion es false, se calcula con los valores
     // si prediccion es true, se calcula con la media
     if (prediccionBool === false) {
@@ -311,7 +311,7 @@ export function prediccion(datos: datosType[], mediaprincipalFilaComparar: numbe
       prediccionMedia(vecinosSeleccionados, mediaprincipalFilaComparar, numeroFila, posicionColumna);
     }
   }
-
+  
 }
 
 /**
