@@ -106,7 +106,7 @@ function opcionesPOSIX() {
         })
         .option('help', {
             describe: 'Muestra la ayuda',
-        }).argv;
+        }).epilog('Métrica(-m): Pearson (1) | Distancia Coseno (2) | Distancia Euclídea (3) \nPredicción(-t): Simple (1) | Media (2) ').argv;
     nombreFichero = argv['f'];
     metrica = argv['m'];
     numeroVecinos = argv['n'];
