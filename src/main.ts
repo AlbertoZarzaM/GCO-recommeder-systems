@@ -77,7 +77,7 @@ function opcionesPOSIX() {
                 return arg;
             },
             type: 'number',
-            choices: ["(1) Pearson", "(2) Coseno", "(3) Euclidea"],
+            choices: [1, 2, 3],
             demandOption: true,
         })
         .option('n', {
@@ -96,7 +96,7 @@ function opcionesPOSIX() {
                 return arg;
             },
             type: 'number',
-            choices: ["(1) Predicción simple", "Predicción de diferencia con media (2)"],
+            choices: [1,2],
             demandOption: true,
         })
         .option('o', {
