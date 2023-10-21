@@ -9,6 +9,12 @@ export let minVal: number = 0;
 // valor maximo de puntuacion asignable por un usuario a un item
 export let maxVal: number = 0;
 
+/**
+ * Función que escribe en el fichero de salida
+ * @params contenido contenido a escribir en el fichero
+ * @returns void
+ * @throws error si no se puede escribir en el fichero
+ */
 export function escribirFichero (contenido: string): void {
   contenido = contenido + '\n';
   fs.appendFile(nombreFicheroSalida, contenido, (error) => {
@@ -18,6 +24,14 @@ export function escribirFichero (contenido: string): void {
   });
 }
 
+/**
+ * Función que lee el fichero de entrada
+ * @params ruta ruta del fichero a leer
+ * @returns matriz con los datos del fichero
+ * @throws error si no se puede leer el fichero
+ * @throws error si el fichero no tiene el formato correcto
+ * 
+ */
 export function leerArchivo(ruta: string): (number | '-')[][] {
   try {
     const contenido = fs.readFileSync(ruta, 'utf-8');

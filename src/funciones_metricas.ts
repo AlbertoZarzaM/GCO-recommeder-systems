@@ -1,10 +1,14 @@
 import { metrica, numeroVecinos, prediccionBool} from "./main";
 import { salidaFichero } from "./main";
-import { escribirFichero } from "./fichero/readFile";
+import { escribirFichero } from "./fichero/LecturaEscritura";
 
 
 import * as ss from 'simple-statistics';
 
+/**
+ * matrizResultado: matriz de utilidad con las predicciones.
+ * MatrizSinNormalizar: matriz de utilidad sin normalizar.
+ */
 export var matrizResultado: (number | '-')[][] = [];
 export var MatrizSinNormalizar: (number | '-')[][] = [];
 
@@ -16,11 +20,12 @@ export var MatrizSinNormalizar: (number | '-')[][] = [];
  * valor: valor de la columna de la incógnita.
  */
 export type datosType = {
-  usuario: number, // Número de fila del usuario
-  media: number,  // Media de los valores del usuario de la matriz de utilidad
-  similitud: number // Similitud entre el usuario y el usuario de la fila con la incognita
-  valor?: number // Valor de la columna de la incognita
+  usuario: number,    // Número de fila del usuario
+  media: number,      // Media de los valores del usuario de la matriz de utilidad
+  similitud: number   // Similitud entre el usuario y el usuario de la fila con la incognita
+  valor?: number      // Valor de la columna de la incognita
 }
+
 
 /**
  * Funcion que pasa la matriz de utilidad a un string.
@@ -28,7 +33,6 @@ export type datosType = {
  * @returns matriz en formato string
  */
 export function matrizAString (matriz: (number | '-')[][]): string {
- 
   let matrizString = "";
   for(let i = 0; i < matriz.length; i++){
       for(let j = 0; j < matriz[i].length; j++){
@@ -40,7 +44,9 @@ export function matrizAString (matriz: (number | '-')[][]): string {
 }
 
 /**
- * Funcion que localiza y extrae los guiones de la matriz.
+ * Funcion que localiza y extrae las posiciones de los guiones de la matriz.
+ * @param matriz matriz de utilidad
+ * @returns posiciones de los guiones
  */
 export function guion(matriz: (number | '-')[][]): [number, number][] {
   let posiciones: [number, number][] = [];
@@ -56,6 +62,8 @@ export function guion(matriz: (number | '-')[][]): [number, number][] {
 
 /**
  * Función para obtener los índices de las filas en las que hay guiones independientemente de la columna
+ * @param posiciones posiciones de los guiones
+ * @returns filas con guiones
  */
 export function filasGuion(posiciones: [number, number][]): number[] {
   let filas: number[] = [];
@@ -68,7 +76,10 @@ export function filasGuion(posiciones: [number, number][]): number[] {
 }
 
 /**
- * función que se encargar de llamar las veces necesarias a la función que calcula la similitud para cada uno de los usuarios principales, es decir, con incógnitas.
+ * Función que se encargar de llamar las veces necesarias a la función que calcula la similitud para cada uno de los usuarios principales, es decir, con incógnitas.
+ * @param filasConGuion filas con guiones
+ * @param matriz matriz de utilidad
+ * @param posicionesGuiones posiciones de los guiones
  */
 export function gestionarLlamadasSimilitudes(filasConGuion: number[], matriz: (number | '-')[][], posicionesGuiones: [number, number][]) {
 
@@ -98,7 +109,7 @@ export function gestionarLlamadasSimilitudes(filasConGuion: number[], matriz: (n
 
 
 /**
- * filtradoMetrica: función que se encarga de filtrar la matriz de utilidad para obtener los datos necesarios para calcular la similitud entre el usuario principal y el resto de usuarios.
+ * Función que se encarga de filtrar la matriz de utilidad para obtener los datos necesarios para calcular la similitud entre el usuario principal y el resto de usuarios.
  * @param matriz matriz de utilidad
  * @param filaPrincipal fila del usuario principal
  */
@@ -106,7 +117,8 @@ export function filtradoMetrica (matriz: (number | '-')[][], filaPrincipal: numb
   let matrizCorrelacion: number[][] = [];
   let datosFinalesUsuario: datosType[] = [];
 
-  const principalFilaComparar: (number | '-')[] = matriz[filaPrincipal]; //* Obtención de la fila del usuario a comparar con los demás
+  //* Obtención de la fila del usuario a comparar con los demás
+  const principalFilaComparar: (number | '-')[] = matriz[filaPrincipal];
 
   if(salidaFichero) {
     escribirFichero('Fila principal a comparar: ' + principalFilaComparar + '\n' + 'Fila: ' + filaPrincipal + '\n');
@@ -119,14 +131,15 @@ export function filtradoMetrica (matriz: (number | '-')[][], filaPrincipal: numb
   for (let i = 0; i < matriz.length; i++) {
     // La fila del usuario a comparar se obvia
     if (i != filaPrincipal) {
-      const vecino: (number|'-') [] = matriz[i] as number[]; //fila del usuario B CON GUIONES
-      const vecinoSinGuiones: number[] = []; //fila del usuario B SIN GUIONES
-      const principalFilaCompararSinGuiones: number[] = []; //fila del usuario A SIN GUIONES
+      const vecino: (number|'-') [] = matriz[i] as number[];  //fila del usuario B CON GUIONES
+      const vecinoSinGuiones: number[] = [];                  //fila del usuario B SIN GUIONES
+      const principalFilaCompararSinGuiones: number[] = [];   //fila del usuario A SIN GUIONES
       
       //En el mismo for vamos a mirar si en alguna de las 2 filas hay un guion.
       for (let j = 0; j < principalFilaComparar.length; ++j) {
         if (principalFilaComparar[j] != '-' && vecino[j] != '-') {
           principalFilaCompararSinGuiones.push(principalFilaComparar[j] as number);
+          // Si no hay guion en ambas, se añade como vecino.
           vecinoSinGuiones.push(vecino[j] as number);
         } 
         // si hay un guion no hacemos nada, pasamos a la siguiente columna.
@@ -272,6 +285,11 @@ export function media(usuario: (number|'-')[]): number {
 
 /**
  * Función que calcula una predicción. Simple o con la media.
+ * @param datos datos de los vecinos seleccionados
+ * @param mediaprincipalFilaComparar media del usuario principal
+ * @param posicionColumna columna de la incógnita
+ * @param matriz matriz de utilidad
+ * @param numeroFila fila de la incógnita
  */
 export function prediccion(datos: datosType[], mediaprincipalFilaComparar: number, posicionColumna: number, matriz: (number | '-')[][], numeroFila: number): void {
   // Ordenar los datos de mayor a menor (similitudes)
@@ -304,7 +322,6 @@ export function prediccion(datos: datosType[], mediaprincipalFilaComparar: numbe
     // si prediccion es false, se calcula con los valores
     // si prediccion es true, se calcula con la media
     if (prediccionBool === false) {
-      // (sumatorio de (similitud * valor)) / sumatorio de similitudes
       prediccionSimple(vecinosSeleccionados, numeroFila, posicionColumna);
     }
     else {
@@ -339,10 +356,7 @@ export function prediccionSimple(vecinosSeleccionados: datosType[], fila: number
     console.log('Prediccion: ', prediccion);
   }
 
-
-
   matrizResultado[fila][columna] = prediccion;
-
 }
 
 /**
@@ -373,8 +387,5 @@ export function prediccionMedia(vecinosSeleccionados: datosType[], mediaprincipa
     console.log('prediccion: ', prediccion); 
   }
 
-
   matrizResultado[fila][columna] = prediccion;
-  // Actualizar prediccion matrizResultado
-
 }

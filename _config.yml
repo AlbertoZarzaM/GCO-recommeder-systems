@@ -1,0 +1,15 @@
+# Site settings
+title: Práctica 1
+description: Filtrado colaborativo
+
+# Theme settings
+remote_theme: pages-themes/slate@v0.2.0
+plugins:
+- jekyll-remote-theme # add this line to the plugins list if you already have one
+
+# Markdown settings
+markdown: kramdown
+
+# # Build settings
+# permalink: /:year/:month/:day/:title/
+# paginate: 5

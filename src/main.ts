@@ -1,13 +1,15 @@
-import { desnormalizarMatriz, leerArchivo, maxVal, minVal } from "./fichero/readFile";
+import { desnormalizarMatriz, leerArchivo, maxVal, minVal } from "./fichero/LecturaEscritura";
 import {filasGuion, matrizResultado } from "./funciones_metricas";
 import { guion } from "./funciones_metricas";
 import { gestionarLlamadasSimilitudes } from "./funciones_metricas";
 import { matrizAString } from "./funciones_metricas";
-import { escribirFichero } from "./fichero/readFile";
+import { escribirFichero } from "./fichero/LecturaEscritura";
 import yargs from 'yargs';
 
 
-
+/**
+ * Variables globales que se utilizan en el programa
+ */
 export var metrica: number = 0;
 export var numeroVecinos: number = 0;
 export var nombreFichero: string = " ";
@@ -58,7 +60,9 @@ export function inicial(matrizOriginal: (number | '-')[][], opciones: [number, n
 
 }
 
-
+/**
+ * Función que gestiona el paso de parámetros por línea de comadnos siguiendo el estándar POSIX.
+ */
 function opcionesPOSIX() {
     const argv = yargs(process.argv.slice(0))
         .option('f', {
@@ -119,4 +123,8 @@ function opcionesPOSIX() {
     inicial(leerArchivo(nombreFichero), [metrica, numeroVecinos, prediccionBool ? 0 : 1]);
 }
 
+
+/**
+ * Punto de inicio del programa
+ */
 opcionesPOSIX();
