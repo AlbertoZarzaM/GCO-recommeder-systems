@@ -1,0 +1,45 @@
+Valor minimo: 1
+Valor maximo: 5
+Matriz sin normalizar 
+5 3 4 4 - 
+3 1 2 3 3 
+4 3 4 3 5 
+3 3 1 5 4 
+1 5 5 2 1 
+
+Matriz normalizada 
+1 0.5 0.75 0.75 - 
+0.5 0 0.25 0.5 0.5 
+0.75 0.5 0.75 0.5 1 
+0.5 0.5 0 1 0.75 
+0 1 1 0.25 0 
+
+Fila principal a comparar: 1,0.5,0.75,0.75,-
+Fila: 0
+
+Similitudes Pearson 0.8528028654224418,0.7071067811865475,0,-0.7921180343813394
+
+Vecinos seleccionados (número de fila): 1, 2
+
+Prediccion: 0.7266499161421599
+
+
+Opciones del usuario: 
+Metrica: 1
+Numero de vecinos: 2
+Nombre fichero: ficheros-pruebas/guion.txt
+Prediccion: false
+
+Matriz resultado normalizada 
+1 0.5 0.75 0.75 0.7266499161421599 
+0.5 0 0.25 0.5 0.5 
+0.75 0.5 0.75 0.5 1 
+0.5 0.5 0 1 0.75 
+0 1 1 0.25 0 
+
+Matriz desnormalizada 
+5 3 4 4 3.907 
+3 1 2 3 3 
+4 3 4 3 5 
+3 3 1 5 4 
+1 5 5 2 1 

@@ -1,0 +1,55 @@
+Valor minimo: 1
+Valor maximo: 5
+Matriz sin normalizar 
+5 3 4 4 3 
+3 - 2 3 3 
+4 3 4 3 5 
+3 3 1 - 4 
+1 5 5 2 1 
+
+Matriz normalizada 
+1 0.5 0.75 0.75 0.5 
+0.5 - 0.25 0.5 0.5 
+0.75 0.5 0.75 0.5 1 
+0.5 0.5 0 - 0.75 
+0 1 1 0.25 0 
+
+Fila principal a comparar: 0.5,-,0.25,0.5,0.5
+Fila: 1
+
+Similitudes Coseno 0.94483466839828,0.94483466839828,0.9245003270420487,0.4036036763977875
+
+Vecinos seleccionados (número de fila): 0, 2, 3
+
+Prediccion: 0.32373550277260593
+
+Fila principal a comparar: 0.5,0.5,0,-,0.75
+Fila: 3
+
+Similitudes Coseno 0.7599605956573484,0.9344911513668012,0.8655784229010971,0.34299717028501764
+
+Vecinos seleccionados (número de fila): 1, 2, 0
+
+Prediccion: 0.41584026517007516
+
+
+Opciones del usuario: 
+Metrica: 2
+Numero de vecinos: 3
+Nombre fichero: ficheros-pruebas/guion2.txt
+Prediccion: true
+
+Matriz resultado normalizada 
+1 0.5 0.75 0.75 0.5 
+0.5 0.32373550277260593 0.25 0.5 0.5 
+0.75 0.5 0.75 0.5 1 
+0.5 0.5 0 0.41584026517007516 0.75 
+0 1 1 0.25 0 
+
+Matriz desnormalizada 
+5 3 4 4 3 
+3 2.295 2 3 3 
+4 3 4 3 5 
+3 3 1 2.663 4 
+1 5 5 2 1 
+
