@@ -1,6 +1,6 @@
 # Gestión del conocimiento en las organizaciones
 
-## Práctica 4: Sistemas de Recomendación. Métodos de filtrado colaborativo
+## Práctica 1: Sistemas de Recomendación. Métodos de filtrado colaborativo
 
 
 #### Autores:
